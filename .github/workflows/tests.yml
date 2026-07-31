@@ -104,7 +104,7 @@ jobs:
         run: mkdir -p /tmp/rector /tmp/phpstan
 
       - name: Tests
-        run: composer ci:tests
+        run: composer ci:check
 
       - name: Store Artifacts
         if: failure()
