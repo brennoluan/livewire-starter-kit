@@ -2,12 +2,19 @@
     "agents": [
         "claude_code",
         "opencode",
-        "antigravity"
+        "antigravity",
+        "codex",
+        "cursor",
+        "junie",
+        "copilot"
     ],
     "cloud": false,
     "guidelines": true,
     "mcp": true,
     "nightwatch": false,
+    "packages": [
+        "livewire/blaze"
+    ],
     "sail": false,
     "skills": [
         "fortify-development",
@@ -15,6 +22,7 @@
         "fluxui-development",
         "livewire-development",
         "pest-testing",
-        "tailwindcss-development"
+        "tailwindcss-development",
+        "blaze-optimize"
     ]
 }
