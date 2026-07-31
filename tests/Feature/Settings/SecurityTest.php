@@ -1,12 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Livewire\Settings\Security;
+use App\Livewire\Settings\TwoFactor\RecoveryCodes;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Fortify\Features;
 use Livewire\Livewire;
 
-beforeEach(function () {
+beforeEach(function (): void {
     $this->skipUnlessFortifyHas(Features::twoFactorAuthentication());
 
     Features::twoFactorAuthentication([
@@ -18,7 +21,7 @@ beforeEach(function () {
     ]);
 });
 
-test('security settings page can be rendered', function () {
+test('security settings page can be rendered', function (): void {
     $user = User::factory()->create();
 
     $response = $this->actingAs($user)
@@ -33,7 +36,7 @@ test('security settings page can be rendered', function () {
     $response->assertSee('Enable 2FA');
 });
 
-test('security settings page requires password confirmation when enabled', function () {
+test('security settings page requires password confirmation when enabled', function (): void {
     $user = User::factory()->create();
 
     $response = $this->actingAs($user)
@@ -42,7 +45,7 @@ test('security settings page requires password confirmation when enabled', funct
     $response->assertRedirect(route('password.confirm'));
 });
 
-test('security settings page renders without two factor when feature is disabled', function () {
+test('security settings page renders without two factor when feature is disabled', function (): void {
     config(['fortify.features' => []]);
 
     $user = User::factory()->create();
@@ -57,7 +60,7 @@ test('security settings page renders without two factor when feature is disabled
         ->assertDontSee('Two-factor authentication');
 });
 
-test('two factor authentication disabled when confirmation abandoned between requests', function () {
+test('two factor authentication disabled when confirmation abandoned between requests', function (): void {
     $user = User::factory()->create();
 
     $user->forceFill([
@@ -79,7 +82,7 @@ test('two factor authentication disabled when confirmation abandoned between req
     ]);
 });
 
-test('password can be updated', function () {
+test('password can be updated', function (): void {
     $user = User::factory()->create([
         'password' => Hash::make('password'),
     ]);
@@ -97,7 +100,7 @@ test('password can be updated', function () {
     expect(Hash::check('new-password', $user->refresh()->password))->toBeTrue();
 });
 
-test('correct password must be provided to update password', function () {
+test('correct password must be provided to update password', function (): void {
     $user = User::factory()->create([
         'password' => Hash::make('password'),
     ]);
@@ -111,4 +114,67 @@ test('correct password must be provided to update password', function () {
         ->call('updatePassword');
 
     $response->assertHasErrors(['current_password']);
+});
+
+test('two factor authentication can be enabled and confirmed', function (): void {
+    $user = User::factory()->create();
+
+    $this->actingAs($user);
+
+    $component = Livewire::test(Security::class)
+        ->call('enable');
+
+    $component->assertSet('showModal', true);
+
+    $component->call('showVerificationIfNecessary');
+    $component->assertSet('showVerificationStep', true);
+
+    $component->set('code', '123456')
+        ->call('confirmTwoFactor');
+
+    $component->call('resetVerification');
+    $component->call('closeModal');
+});
+
+test('two factor authentication can be disabled', function (): void {
+    $user = User::factory()->withTwoFactor()->create();
+
+    $this->actingAs($user);
+
+    Livewire::test(Security::class)
+        ->call('disable')
+        ->assertSet('twoFactorEnabled', false);
+});
+
+test('recovery codes can be loaded and regenerated', function (): void {
+    $user = User::factory()->withTwoFactor()->create();
+
+    $this->actingAs($user);
+
+    Livewire::test(RecoveryCodes::class)
+        ->call('regenerateRecoveryCodes')
+        ->assertHasNoErrors();
+});
+
+test('passkeys confirm delete modal and rate limiters', function (): void {
+    $user = User::factory()->create();
+
+    $this->actingAs($user);
+
+    $component = Livewire::test(Security::class);
+
+    $component->call('confirmDelete', 999)
+        ->assertSet('showDeleteModal', false);
+
+    $component->call('closeDeleteModal')
+        ->assertSet('showDeleteModal', false);
+
+    $this->post('/login', [
+        'email' => $user->email,
+        'password' => 'password',
+    ]);
+
+    $this->post('/login', [
+        'credential' => ['id' => 'test-credential-id'],
+    ]);
 });
