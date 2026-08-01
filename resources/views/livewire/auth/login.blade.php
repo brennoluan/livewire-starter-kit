@@ -11,9 +11,9 @@
             @csrf
 
             <!-- Email Address -->
-            <flux:input
+            <x-input
                 name="email"
-                :label="__('Email address')"
+                label="{{ __('Email address') }}"
                 :value="old('email')"
                 type="email"
                 required
@@ -24,36 +24,34 @@
 
             <!-- Password -->
             <div class="relative">
-                <flux:input
+                <x-password
                     name="password"
-                    :label="__('Password')"
-                    type="password"
+                    label="{{ __('Password') }}"
                     required
                     autocomplete="current-password"
-                    :placeholder="__('Password')"
-                    viewable
+                    placeholder="{{ __('Password') }}"
                 />
 
                 @if (Route::has('password.request'))
-                    <flux:link class="absolute top-0 text-sm end-0" :href="route('password.request')" wire:navigate>
+                    <a class="absolute top-0 text-xs font-medium text-zinc-900 underline end-0 hover:text-zinc-700 dark:text-white dark:hover:text-zinc-300" href="{{ route('password.request') }}" wire:navigate>
                         {{ __('Forgot your password?') }}
-                    </flux:link>
+                    </a>
                 @endif
             </div>
 
             <!-- Remember Me -->
-            <flux:checkbox name="remember" :label="__('Remember me')" :checked="old('remember')" />
+            <x-checkbox name="remember" label="{{ __('Remember me') }}" :checked="old('remember')" />
 
             <div class="flex items-center justify-end">
-                <flux:button variant="primary" type="submit" class="w-full" data-test="login-button">
+                <x-button type="submit" class="w-full" data-test="login-button">
                     {{ __('Log in') }}
-                </flux:button>
+                </x-button>
             </div>
         </form>
 
         <div class="space-x-1 text-sm text-center rtl:space-x-reverse text-zinc-600 dark:text-zinc-400">
             <span>{{ __('Don\'t have an account?') }}</span>
-            <flux:link :href="route('register')" wire:navigate>{{ __('Sign up') }}</flux:link>
+            <a class="font-medium text-zinc-900 underline hover:text-zinc-700 dark:text-white dark:hover:text-zinc-300" href="{{ route('register') }}" wire:navigate>{{ __('Sign up') }}</a>
         </div>
     </div>
 </x-layouts::auth>

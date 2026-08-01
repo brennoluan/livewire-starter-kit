@@ -7,17 +7,18 @@ namespace App\Livewire\Settings;
 use App\Brain\Workflows\SendEmailVerificationNotificationWorkflow;
 use App\Concerns\ProfileValidationRules;
 use App\Models\User;
-use Flux\Flux;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Fortify\Contracts\UpdatesUserProfileInformation;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Title;
 use Livewire\Component;
+use TallStackUi\Traits\Interactions;
 
 #[Title('Profile settings')]
 final class Profile extends Component
 {
+    use Interactions;
     use ProfileValidationRules;
 
     public string $name = '';
@@ -49,7 +50,7 @@ final class Profile extends Component
             'email' => $this->email,
         ]);
 
-        Flux::toast(variant: 'success', text: __('Profile updated.'));
+        $this->toast()->success(__('Profile updated.'))->send();
     }
 
     /**
@@ -70,7 +71,7 @@ final class Profile extends Component
             'user' => $user,
         ]);
 
-        Flux::toast(text: __('A new verification link has been sent to your email address.'));
+        $this->toast()->info(__('A new verification link has been sent to your email address.'))->send();
     }
 
     #[Computed]

@@ -7,7 +7,6 @@ namespace App\Livewire\Settings;
 use App\Concerns\PasswordValidationRules;
 use App\Models\User;
 use Exception;
-use Flux\Flux;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Auth;
@@ -25,10 +24,12 @@ use Livewire\Attributes\Locked;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
+use TallStackUi\Traits\Interactions;
 
 #[Title('Security settings')]
 final class Security extends Component
 {
+    use Interactions;
     use PasswordValidationRules;
 
     public string $current_password = '';
@@ -130,7 +131,7 @@ final class Security extends Component
 
         $this->reset('current_password', 'password', 'password_confirmation');
 
-        Flux::toast(variant: 'success', text: __('Password updated.'));
+        $this->toast()->success(__('Password updated.'))->send();
     }
 
     /**
