@@ -13,7 +13,9 @@
     "mcp": true,
     "nightwatch": false,
     "packages": [
-        "livewire/blaze"
+        "livewire/blaze",
+        "r2luna/brain",
+        "pestphp/pest-plugin-agent"
     ],
     "sail": false,
     "skills": [
@@ -23,6 +25,7 @@
         "livewire-development",
         "pest-testing",
         "tailwindcss-development",
-        "blaze-optimize"
+        "blaze-optimize",
+        "pest-plugin-agent"
     ]
 }
