@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Livewire\Settings;
 
+use App\Brain\Workflows\DeleteUserWorkflow;
 use App\Concerns\PasswordValidationRules;
 use App\Livewire\Actions\Logout;
 use App\Models\User;
@@ -28,7 +29,11 @@ final class DeleteUserForm extends Component
         /** @var User $user */
         $user = Auth::user();
 
-        tap($user, $logout(...))->delete();
+        $logout();
+
+        DeleteUserWorkflow::run([
+            'user' => $user,
+        ]);
 
         $this->redirect('/', navigate: true);
     }

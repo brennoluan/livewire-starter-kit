@@ -15,6 +15,7 @@ use Illuminate\Validation\ValidationException;
 use Laravel\Fortify\Actions\ConfirmTwoFactorAuthentication;
 use Laravel\Fortify\Actions\DisableTwoFactorAuthentication;
 use Laravel\Fortify\Actions\EnableTwoFactorAuthentication;
+use Laravel\Fortify\Contracts\UpdatesUserPasswords;
 use Laravel\Fortify\Features;
 use Laravel\Fortify\Fortify;
 use Laravel\Passkeys\Actions\DeletePasskey;
@@ -104,7 +105,7 @@ final class Security extends Component
     /**
      * Update the password for the currently authenticated user.
      */
-    public function updatePassword(): void
+    public function updatePassword(UpdatesUserPasswords $updater): void
     {
         /** @var User $user */
         $user = Auth::user();
@@ -121,8 +122,10 @@ final class Security extends Component
             throw $validationException;
         }
 
-        $user->update([
+        $updater->update($user, [
+            'current_password' => $validated['current_password'],
             'password' => $validated['password'],
+            'password_confirmation' => $this->password_confirmation,
         ]);
 
         $this->reset('current_password', 'password', 'password_confirmation');

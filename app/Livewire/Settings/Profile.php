@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace App\Livewire\Settings;
 
+use App\Brain\Workflows\SendEmailVerificationNotificationWorkflow;
 use App\Concerns\ProfileValidationRules;
 use App\Models\User;
 use Flux\Flux;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Support\Facades\Auth;
+use Laravel\Fortify\Contracts\UpdatesUserProfileInformation;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -37,21 +39,15 @@ final class Profile extends Component
     /**
      * Update the profile information for the currently authenticated user.
      */
-    public function updateProfileInformation(): void
+    public function updateProfileInformation(UpdatesUserProfileInformation $updater): void
     {
         /** @var User $user */
         $user = Auth::user();
 
-        /** @var array<string, mixed> $validated */
-        $validated = $this->validate($this->profileRules($user->id));
-
-        $user->fill($validated);
-
-        if ($user->isDirty('email')) {
-            $user->email_verified_at = null;
-        }
-
-        $user->save();
+        $updater->update($user, [
+            'name' => $this->name,
+            'email' => $this->email,
+        ]);
 
         Flux::toast(variant: 'success', text: __('Profile updated.'));
     }
@@ -70,7 +66,9 @@ final class Profile extends Component
             return;
         }
 
-        $user->sendEmailVerificationNotification();
+        SendEmailVerificationNotificationWorkflow::run([
+            'user' => $user,
+        ]);
 
         Flux::toast(text: __('A new verification link has been sent to your email address.'));
     }

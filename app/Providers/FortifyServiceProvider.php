@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
-use App\Actions\Fortify\CreateNewUser;
-use App\Actions\Fortify\ResetUserPassword;
+use App\Brain\Workflows\CreateUserWorkflow;
+use App\Brain\Workflows\ResetUserPasswordWorkflow;
+use App\Brain\Workflows\UpdateUserPasswordWorkflow;
+use App\Brain\Workflows\UpdateUserProfileWorkflow;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
@@ -40,8 +42,10 @@ final class FortifyServiceProvider extends ServiceProvider
      */
     private function configureActions(): void
     {
-        Fortify::resetUserPasswordsUsing(ResetUserPassword::class);
-        Fortify::createUsersUsing(CreateNewUser::class);
+        Fortify::resetUserPasswordsUsing(ResetUserPasswordWorkflow::class);
+        Fortify::createUsersUsing(CreateUserWorkflow::class);
+        Fortify::updateUserProfileInformationUsing(UpdateUserProfileWorkflow::class);
+        Fortify::updateUserPasswordsUsing(UpdateUserPasswordWorkflow::class);
     }
 
     /**
