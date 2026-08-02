@@ -17,6 +17,12 @@ final class DeleteUserForm extends Component
 
     public string $password = '';
 
+    public function resetFields(): void
+    {
+        $this->reset('password');
+        $this->resetErrorBag();
+    }
+
     /**
      * Delete the currently authenticated user.
      */

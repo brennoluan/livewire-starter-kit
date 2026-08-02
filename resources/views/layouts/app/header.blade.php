@@ -3,8 +3,8 @@
     <head>
         @include('partials.head')
     </head>
-    <body class="min-h-screen antialiased transition-colors" x-bind:class="{ 'dark bg-neutral-950 text-neutral-100': darkTheme, 'bg-neutral-50 text-neutral-950': ! darkTheme }">
-        <header class="border-b border-neutral-200 bg-white/90 shadow-xs backdrop-blur dark:border-neutral-800 dark:bg-neutral-950/90" x-data="{ mobileOpen: false }">
+    <body class="h-screen w-screen overflow-hidden flex flex-col antialiased transition-colors" x-bind:class="{ 'dark bg-neutral-950 text-neutral-100': darkTheme, 'bg-neutral-50 text-neutral-950': ! darkTheme }">
+        <header class="sticky top-0 z-40 shrink-0 border-b border-neutral-200 bg-white/90 shadow-xs backdrop-blur dark:border-neutral-800 dark:bg-neutral-950/90" x-data="{ mobileOpen: false }">
             <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
                 <div class="flex items-center gap-4">
                     <button @click="mobileOpen = !mobileOpen" type="button" class="rounded-md p-1.5 text-neutral-600 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-800 lg:hidden">
@@ -37,11 +37,12 @@
             </div>
         </header>
 
-        <main class="mx-auto max-w-7xl p-4 sm:p-6">
+        <main class="flex-1 overflow-y-auto mx-auto w-full max-w-7xl p-4 sm:p-6">
             {{ $slot }}
         </main>
 
         <x-toast />
+        <x-dialog />
         @livewireScripts
     </body>
 </html>

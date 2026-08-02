@@ -3,47 +3,15 @@
     <head>
         @include('partials.head')
     </head>
-    <body class="min-h-screen antialiased transition-colors" x-bind:class="{ 'dark bg-neutral-950 text-neutral-100': darkTheme, 'bg-neutral-50 text-neutral-950': ! darkTheme }">
-        <div class="flex min-h-screen flex-col lg:flex-row" x-data="{ sidebarOpen: false }">
-            <!-- Mobile Navigation Bar -->
-            <div class="flex items-center justify-between border-b border-neutral-200 bg-white/90 px-4 py-2.5 shadow-xs backdrop-blur dark:border-neutral-800 dark:bg-neutral-950/90 lg:hidden">
-                <button @click="sidebarOpen = !sidebarOpen" type="button" class="rounded-md p-1.5 text-neutral-600 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-800 focus:outline-none">
-                    <x-icon name="bars-3" class="size-6" />
-                </button>
-
-                <x-app-logo href="{{ route('dashboard') }}" wire:navigate />
-
-                <x-dropdown position="bottom-end">
-                    <x-slot:action>
-                        <button type="button" x-on:click="show = !show" class="flex items-center focus:outline-none">
-                            <x-avatar text="{{ auth()->user()->initials() }}" sm />
-                        </button>
-                    </x-slot:action>
-                    <div class="flex items-center gap-2 border-b border-neutral-200 px-3 py-2 text-start text-sm dark:border-neutral-800">
-                        <x-avatar text="{{ auth()->user()->initials() }}" sm />
-                        <div class="grid flex-1 text-start text-sm leading-tight">
-                            <span class="truncate font-semibold text-neutral-900 dark:text-white">{{ auth()->user()->name }}</span>
-                            <span class="truncate text-xs text-neutral-500 dark:text-neutral-400">{{ auth()->user()->email }}</span>
-                        </div>
-                    </div>
-                    <x-dropdown.items text="{{ __('Settings') }}" icon="cog-6-tooth" :href="route('profile.edit')" wire:navigate />
-                    <form method="POST" action="{{ route('logout') }}" class="w-full">
-                        @csrf
-                        <button type="submit" class="flex w-full cursor-pointer items-center gap-2 px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-800" data-test="logout-button">
-                            <x-icon name="arrow-right-start-on-rectangle" class="size-4" />
-                            <span>{{ __('Log out') }}</span>
-                        </button>
-                    </form>
-                </x-dropdown>
-            </div>
-
+    <body class="h-screen w-screen overflow-hidden antialiased transition-colors" x-bind:class="{ 'dark bg-neutral-950 text-neutral-100': darkTheme, 'bg-neutral-50 text-neutral-950': ! darkTheme }">
+        <div class="flex h-screen w-screen overflow-hidden" x-data="{ sidebarOpen: false }">
             <!-- Sidebar Overlay (Mobile) -->
             <div x-show="sidebarOpen" x-transition.opacity @click="sidebarOpen = false" class="fixed inset-0 z-40 bg-neutral-950/45 backdrop-blur-xs lg:hidden" x-cloak></div>
 
             <!-- Sidebar -->
             <aside
                 :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'"
-                class="fixed inset-y-0 left-0 z-50 flex w-64 flex-col border-e border-neutral-200 bg-white/95 p-4 shadow-xl transition-transform duration-200 backdrop-blur dark:border-neutral-800 dark:bg-neutral-950/95 lg:static lg:translate-x-0 lg:shadow-none"
+                class="fixed inset-y-0 left-0 z-50 flex w-64 shrink-0 flex-col border-e border-neutral-200 bg-white/95 p-4 shadow-xl transition-transform duration-200 backdrop-blur dark:border-neutral-800 dark:bg-neutral-950/95 lg:sticky lg:top-0 lg:h-screen lg:translate-x-0 lg:shadow-none"
             >
                 <div class="flex items-center justify-between pb-4">
                     <x-app-logo :sidebar="true" href="{{ route('dashboard') }}" wire:navigate />
@@ -52,7 +20,7 @@
                     </button>
                 </div>
 
-                <nav class="flex flex-1 flex-col space-y-6 pt-2">
+                <nav class="flex flex-1 flex-col space-y-6 pt-2 overflow-y-auto">
                     <div>
                         <div class="px-2 text-xs font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
                             {{ __('Platform') }}
@@ -66,26 +34,39 @@
                                 <x-icon name="home" class="size-5" />
                                 <span>{{ __('Dashboard') }}</span>
                             </a>
-                        </div>
-                    </div>
+                            @can('viewAny', App\Models\User::class)
+                                <a
+                                    href="{{ route('users.index') }}"
+                                    wire:navigate
+                                    class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors {{ request()->routeIs('users.*') ? 'bg-primary-50 text-primary-800 dark:bg-primary-950/45 dark:text-primary-200' : 'text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-white' }}"
+                                >
+                                    <x-icon name="users" class="size-5" />
+                                    <span>{{ __('Users') }}</span>
+                                </a>
+                            @endcan
 
-                    <div class="mt-auto space-y-1">
-                        <a
-                            href="https://github.com/laravel/livewire-starter-kit"
-                            target="_blank"
-                            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-white"
-                        >
-                            <x-icon name="code-bracket" class="size-5" />
-                            <span>{{ __('Repository') }}</span>
-                        </a>
-                        <a
-                            href="https://laravel.com/docs/starter-kits#livewire"
-                            target="_blank"
-                            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-white"
-                        >
-                            <x-icon name="book-open" class="size-5" />
-                            <span>{{ __('Documentation') }}</span>
-                        </a>
+                            @can('viewAny', App\Models\Role::class)
+                                <a
+                                    href="{{ route('roles.index') }}"
+                                    wire:navigate
+                                    class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors {{ request()->routeIs('roles.*') ? 'bg-primary-50 text-primary-800 dark:bg-primary-950/45 dark:text-primary-200' : 'text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-white' }}"
+                                >
+                                    <x-icon name="shield-check" class="size-5" />
+                                    <span>{{ __('Roles') }}</span>
+                                </a>
+                            @endcan
+
+                            @can('viewAny', App\Models\Permission::class)
+                                <a
+                                    href="{{ route('permissions.index') }}"
+                                    wire:navigate
+                                    class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors {{ request()->routeIs('permissions.*') ? 'bg-primary-50 text-primary-800 dark:bg-primary-950/45 dark:text-primary-200' : 'text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-white' }}"
+                                >
+                                    <x-icon name="key" class="size-5" />
+                                    <span>{{ __('Permissions') }}</span>
+                                </a>
+                            @endcan
+                        </div>
                     </div>
                 </nav>
 
@@ -94,13 +75,49 @@
                 </div>
             </aside>
 
-            <!-- Main Content Area -->
-            <main class="flex-1 p-4 sm:p-6">
-                {{ $slot }}
-            </main>
+            <!-- Main Content Area Container -->
+            <div class="flex flex-1 flex-col h-screen overflow-hidden">
+                <!-- Mobile Navigation Bar -->
+                <div class="sticky top-0 z-30 shrink-0 flex items-center justify-between border-b border-neutral-200 bg-white/90 px-4 py-2.5 shadow-xs backdrop-blur dark:border-neutral-800 dark:bg-neutral-950/90 lg:hidden">
+                    <button @click="sidebarOpen = !sidebarOpen" type="button" class="rounded-md p-1.5 text-neutral-600 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-800 focus:outline-none">
+                        <x-icon name="bars-3" class="size-6" />
+                    </button>
+
+                    <x-app-logo href="{{ route('dashboard') }}" wire:navigate />
+
+                    <x-dropdown position="bottom-end">
+                        <x-slot:action>
+                            <button type="button" x-on:click="show = !show" class="flex items-center focus:outline-none">
+                                <x-avatar text="{{ auth()->user()->initials() }}" sm />
+                            </button>
+                        </x-slot:action>
+                        <div class="flex items-center gap-2 border-b border-neutral-200 px-3 py-2 text-start text-sm dark:border-neutral-800">
+                            <x-avatar text="{{ auth()->user()->initials() }}" sm />
+                            <div class="grid flex-1 text-start text-sm leading-tight">
+                                <span class="truncate font-semibold text-neutral-900 dark:text-white">{{ auth()->user()->name }}</span>
+                                <span class="truncate text-xs text-neutral-500 dark:text-neutral-400">{{ auth()->user()->email }}</span>
+                            </div>
+                        </div>
+                        <x-dropdown.items text="{{ __('Settings') }}" icon="cog-6-tooth" :href="route('profile.edit')" wire:navigate />
+                        <form method="POST" action="{{ route('logout') }}" class="w-full">
+                            @csrf
+                            <button type="submit" class="flex w-full cursor-pointer items-center gap-2 px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-800" data-test="logout-button">
+                                <x-icon name="arrow-right-start-on-rectangle" class="size-4" />
+                                <span>{{ __('Log out') }}</span>
+                            </button>
+                        </form>
+                    </x-dropdown>
+                </div>
+
+                <!-- Scrollable Main Content -->
+                <main class="flex-1 overflow-y-auto p-4 sm:p-6">
+                    {{ $slot }}
+                </main>
+            </div>
         </div>
 
         <x-toast />
+        <x-dialog />
         @livewireScripts
     </body>
 </html>
