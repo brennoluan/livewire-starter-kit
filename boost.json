@@ -15,7 +15,8 @@
     "packages": [
         "livewire/blaze",
         "r2luna/brain",
-        "pestphp/pest-plugin-agent"
+        "pestphp/pest-plugin-agent",
+        "spatie/laravel-permission"
     ],
     "sail": false,
     "skills": [
@@ -25,6 +26,7 @@
         "pest-testing",
         "tailwindcss-development",
         "blaze-optimize",
+        "laravel-permission-development",
         "pest-plugin-agent"
     ]
 }
