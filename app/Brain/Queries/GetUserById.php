@@ -10,7 +10,8 @@ use Brain\Query;
 final class GetUserById extends Query
 {
     public function __construct(
-        private readonly int $id,
+        private readonly string $id,
+
     ) {}
 
     public function handle(): User

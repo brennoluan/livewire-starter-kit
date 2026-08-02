@@ -49,6 +49,10 @@ final class UpdateUser extends Action
 
         $this->user->save();
 
+        if (property_exists($this, 'roles') && $this->roles !== null && is_array($this->roles)) {
+            $this->user->syncRoles($this->roles);
+        }
+
         return $this;
     }
 }

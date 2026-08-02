@@ -36,6 +36,10 @@ final class CreateUser extends Action
             'password' => $this->password,
         ]);
 
+        if (property_exists($this, 'roles') && $this->roles !== null && is_array($this->roles)) {
+            $this->user->syncRoles($this->roles);
+        }
+
         return $this;
     }
 }
