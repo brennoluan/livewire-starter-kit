@@ -13,6 +13,7 @@
         "laravel/chisel": "^0.1.1",
         "laravel/fortify": "^1.37.3",
         "laravel/framework": "^13.23",
+        "laravel/head": "^0.1.0",
         "laravel/tinker": "^3.0.2",
         "livewire/blaze": "^1.0.13",
         "livewire/livewire": "^4.3.4",
