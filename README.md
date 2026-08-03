@@ -30,6 +30,10 @@ This starter kit provides a complete foundation for building scalable Laravel we
   - **Profile:** Update account details, email address, and profile information.
   - **Security:** Manage password changes, 2FA, and passkey registration.
   - **Appearance:** Toggle system appearance (Light / Dark mode).
+- **Document Head & SEO (`laravel/head`)**
+  - Fluent document `<head>` management with `@head` directive.
+  - Layered resolution precedence (defaults, route metadata, runtime metadata, error pages).
+  - Open Graph tags, Twitter cards, canonical URLs, robots directives, app favicons, and JSON-LD schemas.
 - **Domain-Driven Workflow Architecture (`r2luna/brain`)**
   - Clean separation of business logic into **Workflows** (transactional orchestration), **Actions** (state mutation units), and **Queries** (read-only data fetching).
 - **High-Performance UI Stack**
@@ -45,6 +49,7 @@ This starter kit provides a complete foundation for building scalable Laravel we
 | --- | --- | --- |
 | **PHP** | `^8.5` | Next-generation PHP runtime |
 | **Laravel Framework** | `^13.23` | Core PHP framework |
+| **Laravel Head** | `^0.1.0` | Fluent document head, Open Graph, and SEO metadata manager |
 | **Livewire** | `^4.3.4` | Server-driven reactive component framework |
 | **Livewire Blaze** | `^1.0.13` | Blade rendering optimization engine |
 | **TallStackUI** | `^3.5.14` | Component framework for TALL stack |
